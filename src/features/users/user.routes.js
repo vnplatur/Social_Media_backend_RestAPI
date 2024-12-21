@@ -13,13 +13,13 @@ userRoutes.post("/signup", upload.single("imageUrl"), (req, res, next) => {
 userRoutes.post("/signin", (req, res, next) => {
   userController.signIn(req, res, next);
 });
-userRoutes.post("/logout", (req, res, next) => {
+userRoutes.post("/logout",jwtAuth, (req, res, next) => {
   userController.logOut(req, res, next);
 });
-userRoutes.post("/logout-all-devices", (req, res, next) => {
+userRoutes.post("/logout-all-devices",jwtAuth, (req, res, next) => {
   userController.logOutAll(req, res, next);
 });
-userRoutes.get("/get-details/:userId", (req, res, next) => {
+userRoutes.get("/get-details/:userId", (req, res, next) => { 
   userController.getById(req, res, next);
 });
 userRoutes.get("/get-all-details", (req, res, next) => {

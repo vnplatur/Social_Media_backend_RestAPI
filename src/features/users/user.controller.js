@@ -30,6 +30,7 @@ export default class UserController {
   async signIn(req, res, next) {
     try {
       const { email, password } = req.body;
+      console.log(password);
 
       //   1. find the user
       const user = await this.userRepository.findByEmail(email);
@@ -44,6 +45,7 @@ export default class UserController {
             {
               userId: user._id,
               email: user.email,
+              issuedAt: new Date().getTime(), // Optional, to track token issuance
             },
             process.env.JWT_SECRET,
             {
@@ -61,19 +63,33 @@ export default class UserController {
   }
   async logOut(req, res, next) {
     try {
+      const token = req.headers["authorization"];
+      
+      await this.userRepository.blacklistToken(token);
+
+      res.status(200).send("Logged out successfully.");
+      
     } catch (err) {
       console.log(err);
       next(err);
     }
   }
+
   async logOutAll(req, res, next) {
     try {
-        
+        const userId = req.userId
+        console.log("userId: ",userId);
+
+        // Update the user's lastLogoutTime or increment tokenVersion
+        await this.userRepository.updateLogoutAll(userId);
+
+        res.status(200).send("Logged out from all devices successfully.");
     } catch (err) {
       console.log(err);
       next(err);
     }
   }
+
   async getById(req, res, next) {
     try {
       const id = req.params.userId;
@@ -105,10 +121,7 @@ export default class UserController {
     try {
       const { name, email, password, gender } = req.body;
       const id = req.params.userId;
-      let image;
-      if (req.file) {
-        image = req.file.filename;
-      }
+
      
       const update = await this.userRepository.updateById(
         id,
@@ -116,7 +129,7 @@ export default class UserController {
         email,
         password,
         gender,
-        image
+        req?.file?.filename
       );
       console.log(update);
       if (update) {

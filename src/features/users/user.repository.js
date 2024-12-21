@@ -1,8 +1,7 @@
 import mongoose from "mongoose";
-import { userSchema } from "./user.schema.js";
+import { UserModel, TokenBlacklistModel } from "./user.schema.js";
 import bcrypt from 'bcrypt';
 
-const UserModel = mongoose.model("user", userSchema);
 
 export default class UserRepository {
   async signUp(data) {
@@ -75,5 +74,23 @@ export default class UserRepository {
       // console.log(err);
       throw err;
     }
+  }
+
+  async blacklistToken(token){
+    const blackList = new TokenBlacklistModel({token,createdAt: new Date()});
+    await blackList.save();
+  }
+
+  async updateLogoutAll(userId){
+    try {
+      const update = await UserModel.updateOne(
+        { _id: userId },
+        { $set: { lastLogoutTime: new Date() } }
+      );
+      return update;
+    } catch (err) {
+      throw new Error("Error logging out from all devices: " + err.message);
+    }
+    
   }
 }
