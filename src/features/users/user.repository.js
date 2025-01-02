@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import { UserModel, TokenBlacklistModel } from "./user.schema.js";
 import bcrypt from 'bcrypt';
+import {ApplicationError} from '../../error-handling/applicationError.js'
 
 
 export default class UserRepository {
@@ -11,7 +12,7 @@ export default class UserRepository {
       return user;
     } catch (err) {
       // console.log(err);
-      throw err;
+      throw new ApplicationError(err.message,401);
     }
   }
 
@@ -21,7 +22,7 @@ export default class UserRepository {
       return user;
     } catch (err) {
       // console.log(err);
-      throw err;
+      throw new ApplicationError(err.message,401);
     }
   }
 
@@ -30,7 +31,7 @@ export default class UserRepository {
       return await UserModel.findOne({ email });
     } catch (err) {
       // console.log(err);
-      throw err;
+      throw new ApplicationError(err.message,401);
     }
   }
   async findAll() {
@@ -38,7 +39,7 @@ export default class UserRepository {
       return await UserModel.find();
     } catch (err) {
       // console.log(err);
-      throw err;
+      throw new ApplicationError(err.message,401);
     }
   }
 
@@ -72,13 +73,19 @@ export default class UserRepository {
       }
     } catch (err) {
       // console.log(err);
-      throw err;
+      throw new ApplicationError(err.message,401);
     }
   }
 
   async blacklistToken(token){
-    const blackList = new TokenBlacklistModel({token,createdAt: new Date()});
-    await blackList.save();
+    try{
+      const blackList = new TokenBlacklistModel({token,createdAt: new Date()});
+      await blackList.save();
+      return blackList
+    }catch(err){
+      throw new ApplicationError(err.message,401);
+    }
+    
   }
 
   async updateLogoutAll(userId){
@@ -89,7 +96,7 @@ export default class UserRepository {
       );
       return update;
     } catch (err) {
-      throw new Error("Error logging out from all devices: " + err.message);
+      throw new ApplicationError("Error logging out from all devices: " + err.message, 401);
     }
     
   }

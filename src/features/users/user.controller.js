@@ -1,3 +1,4 @@
+import { ApplicationError } from "../../error-handling/applicationError.js";
 import userModel from "./user.model.js";
 import UserRepository from "./user.repository.js";
 import bcrypt from "bcrypt";
@@ -23,7 +24,10 @@ export default class UserController {
       res.status(200).send(createUser);
     } catch (err) {
       console.log(err);
-      next(err);
+      if(err instanceof ApplicationError){
+        next(err);
+      }
+      res.status(401).send(err.message);
     }
   }
 
@@ -58,7 +62,10 @@ export default class UserController {
       }
     } catch (err) {
       console.log(err);
-      next(err);
+      if(err instanceof ApplicationError){
+        next(err);
+      }
+      res.status(401).send(err.message);
     }
   }
   async logOut(req, res, next) {
@@ -71,7 +78,10 @@ export default class UserController {
       
     } catch (err) {
       console.log(err);
-      next(err);
+      if(err instanceof ApplicationError){
+        next(err);
+      }
+      res.status(401).send(err.message);
     }
   }
 
@@ -86,7 +96,10 @@ export default class UserController {
         res.status(200).send("Logged out from all devices successfully.");
     } catch (err) {
       console.log(err);
-      next(err);
+      if(err instanceof ApplicationError){
+        next(err);
+      }
+      res.status(401).send(err.message);
     }
   }
 
@@ -101,7 +114,10 @@ export default class UserController {
       }
     } catch (err) {
       console.log(err);
-      next(err);
+      if(err instanceof ApplicationError){
+        next(err);
+      }
+      res.status(401).send(err.message);
     }
   }
   async getAll(req, res, next) {
@@ -114,15 +130,16 @@ export default class UserController {
       }
     } catch (err) {
       console.log(err);
-      next(err);
+      if(err instanceof ApplicationError){
+        next(err);
+      }
+      res.status(401).send(err.message);
     }
   }
   async updateById(req, res, next) {
     try {
       const { name, email, password, gender } = req.body;
-      const id = req.params.userId;
-
-     
+      const id = req.params.userId;  
       const update = await this.userRepository.updateById(
         id,
         name,
@@ -141,7 +158,10 @@ export default class UserController {
       }
     } catch (err) {
       console.log(err);
-      next(err);
+      if(err instanceof ApplicationError){
+        next(err);
+      }
+      res.status(401).send(err.message);
     }
   }
 }

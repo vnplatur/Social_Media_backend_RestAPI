@@ -16,7 +16,12 @@ const jwtAuth = async (req, res, next) => {
       token,
       process.env.JWT_SECRET,
       async (err, user) => {
-        if (err) return res.sendStatus(403);
+        if (err) {
+          if (err.name === "TokenExpiredError") {
+            return res.status(401).send("Token is expired");
+          }
+          return res.status(403).send("Forbidden");
+        }
 
         // 4. check blacklisted or not
         const isBlacklisted = await TokenBlacklistModel.findOne({ token });
@@ -33,6 +38,7 @@ const jwtAuth = async (req, res, next) => {
         next();
       }
     );
+    console.log(payload)
   } catch (err) {
     console.log(err);
     return res.status(401).send("Unauthorized");
