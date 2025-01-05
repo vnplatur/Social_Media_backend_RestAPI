@@ -9,15 +9,15 @@ export const connectUsingMongoose = async () => {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
-    createIndexes();
+    // createIndexes();
     console.log("Mongodb connected using mongoose");
   } catch (err) {
-    console.log("Error while connecting to db");
+    console.log("Error while connecting to db"); 
     console.log(err);
   }
 };
 
 
-const createIndexes = ()=>{
-  TokenBlacklistModel.collection.createIndex({ "createdAt": 1 }, { expireAfterSeconds: 100 })
-}
+// const createIndexes = ()=>{
+//   TokenBlacklistModel.collection.createIndex({ "createdAt": 1 }, { expireAfterSeconds: 100 })
+// }

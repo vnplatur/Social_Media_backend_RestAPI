@@ -57,7 +57,7 @@ export default class UserRepository {
         }
         if (password) {
           const hashedPassword = await bcrypt.hash(password, 10);
-          user.password = password;
+          user.password = hashedPassword;
           await user.save();
         }
         if (gender) {

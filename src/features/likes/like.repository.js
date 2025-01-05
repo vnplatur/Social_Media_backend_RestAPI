@@ -30,7 +30,7 @@ export default class LikeRepository {
     }
   }
 
-  async getLike(id, userId, type) {
+  async getLike(id, userId) {
     try {
       // Check if a like already exists
       const existingLike = await likeModel.findOne({
@@ -39,19 +39,11 @@ export default class LikeRepository {
       });
 
       if (existingLike) {
-        await existingLike.deleteOne();
-        return "Unliked successfully";
+        const likes = await existingLike.populate("userId","id name email");
+        return likes.userId;
+      }else{
+        return "not likes are found on this Post or Comment"
       }
-
-      // Otherwise, add a new like
-      const newLike = new likeModel({
-        likeable: new ObjectId(id),
-        userId,
-        onModel: type,
-      });
-
-      await newLike.save();
-      return "Liked successfully";
     } catch (err) {
       throw new ApplicationError(err.message,401);
     }

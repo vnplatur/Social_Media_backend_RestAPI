@@ -8,6 +8,9 @@ import { postRoutes } from "./src/features/posts/post.routes.js";
 import { commentRoutes } from "./src/features/comments/comment.routes.js";
 import jwtAuth from "./src/middelware/jwt.middelware.js";
 import { ApplicationError } from "./src/error-handling/applicationError.js";
+import {likeRoutes} from './src/features/likes/like.routes.js'
+import { friendShipRoutes } from "./src/features/friendShip/friendShip.routes.js";
+import { OtpRoutes } from "./src/features/otpRest/otp.routes.js";
 
 const server = express();
 server.use(express.json());
@@ -15,6 +18,9 @@ server.use(express.json());
 server.use("/api/users", userRoutes);
 server.use("/api/posts", jwtAuth, postRoutes);
 server.use("/api/comments", jwtAuth, commentRoutes);
+server.use("/api/likes", jwtAuth, likeRoutes);
+server.use("/api/friends", jwtAuth, friendShipRoutes);
+server.use("/api/otp", OtpRoutes);
 
 // Error handler middleware
 server.use((err, req, res, next) => {

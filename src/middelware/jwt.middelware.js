@@ -34,11 +34,11 @@ const jwtAuth = async (req, res, next) => {
         }
 
         req.userId = user.userId;
-        console.log(user.issuedAt + "  "+  userRecord.lastLogoutTime)
+        
         next();
       }
     );
-    console.log(payload)
+    
   } catch (err) {
     console.log(err);
     return res.status(401).send("Unauthorized");

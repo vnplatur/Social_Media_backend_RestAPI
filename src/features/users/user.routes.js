@@ -25,7 +25,7 @@ userRoutes.get("/get-details/:userId", (req, res, next) => {
 userRoutes.get("/get-all-details", (req, res, next) => {
   userController.getAll(req, res, next);
 });
-userRoutes.post(
+userRoutes.put(
   "/update-details/:userId",
   upload.single("imageUrl"),
   (req, res, next) => {

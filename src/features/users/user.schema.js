@@ -20,6 +20,7 @@ import mongoose from "mongoose";
   imageUrl: { type: String },
   gender: { type: String, required: [true, "gendar is required"] },
   lastLogoutTime: {type: Date},       // Timestamp for the last logout from all devices
+  friends: [{type: mongoose.Schema.Types.ObjectId , ref:'user'}],
   // createdAt: {type: Date},            // Timestamp for when the user was created
   
 });
@@ -28,9 +29,13 @@ import mongoose from "mongoose";
 // new one added
 const BlacklistSchema = new mongoose.Schema({
   token: { type: String, required: true },
-  createdAt: Date,
-});
-
+  createdAt: {
+    type: Date,
+    default: Date.now,
+    expires: 36000
+  },
+}); 
+ 
 export const UserModel = mongoose.model("user", userSchema);
 
 export const TokenBlacklistModel = mongoose.model('TokenBlacklist', BlacklistSchema);
